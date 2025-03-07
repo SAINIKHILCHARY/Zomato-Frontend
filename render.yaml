@@ -2,9 +2,11 @@ services:
   - type: web
     name: zomato-clone
     env: node
-    buildCommand: yarn build
+    buildCommand: yarn install && yarn build
     startCommand: yarn preview
     staticPublishPath: ./dist
     envVars:
       - key: NODE_VERSION
-        value: 16.0.0 
+        value: 18.0.0
+      - key: NODE_ENV
+        value: production 

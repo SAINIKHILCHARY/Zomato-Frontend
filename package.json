@@ -18,13 +18,13 @@
     "react-dom": "18.2.0",
     "react-router-dom": "6.22.0",
     "react-slick": "0.29.0",
-    "slick-carousel": "1.8.1"
+    "slick-carousel": "1.8.1",
+    "vite": "5.0.12"
   },
   "devDependencies": {
     "@types/react": "18.2.0",
     "@types/react-dom": "18.2.0",
-    "@vitejs/plugin-react": "4.2.1",
-    "vite": "5.0.12"
+    "@vitejs/plugin-react": "4.2.1"
   },
   "type": "module"
 }
