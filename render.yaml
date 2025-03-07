@@ -2,11 +2,13 @@ services:
   - type: web
     name: zomato-clone
     env: node
-    buildCommand: yarn install && yarn build
+    buildCommand: yarn install --frozen-lockfile && yarn build
     startCommand: yarn preview
     staticPublishPath: ./dist
     envVars:
       - key: NODE_VERSION
         value: 18.0.0
       - key: NODE_ENV
-        value: production 
+        value: production
+      - key: CI
+        value: true 
