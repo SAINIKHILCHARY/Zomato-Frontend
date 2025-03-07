@@ -2,7 +2,6 @@ import {useState} from 'react'
 import { Link } from 'react-router-dom'
 
 import { Formik, Field, Form, ErrorMessage } from 'formik';
-import * as Yup from 'yup';
 
 import TextUtil from '../../FormUtils/TextUtil/TextUtil'
 import TelUtil from '../../FormUtils/TelUtil/TelUtil'
@@ -18,15 +17,21 @@ let AddRestaurantFormCard = () => {
         phone: '',
         message: '' 
     })
-    let validationSchema = Yup.object({
-        restName: Yup.string()
-        .min(5, 'Minimum 5 characters required')
-        .max(15, 'Must be less than 15 characters')
-        .required('Required'),
-        location: Yup.string().required('Required'),
-        phone: Yup.string(),
-        message: Yup.string(),
-    })
+
+    let validate = (values) => {
+        const errors = {};
+        if (!values.restName) {
+            errors.restName = 'Required';
+        } else if (values.restName.length < 5) {
+            errors.restName = 'Minimum 5 characters required';
+        } else if (values.restName.length > 15) {
+            errors.restName = 'Must be less than 15 characters';
+        }
+        if (!values.location) {
+            errors.location = 'Required';
+        }
+        return errors;
+    }
 
     let submitForm = (values, { setSubmitting }) => {
         console.log(values, "submited");
@@ -36,7 +41,7 @@ let AddRestaurantFormCard = () => {
         <div className={css.innerDiv}>
             <Formik
                 initialValues={initialValues}
-                validationSchema={validationSchema}
+                validate={validate}
                 onSubmit={submitForm}
                 className={css.formikForm}
             >

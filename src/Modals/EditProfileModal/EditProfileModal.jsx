@@ -3,7 +3,6 @@ import { createPortal } from 'react-dom'
 import React from 'react'
 
 import { Formik, Field, Form, ErrorMessage } from 'formik';
-import * as Yup from 'yup';
 
 import css from './EditProfileModal.module.css'
 
@@ -32,15 +31,31 @@ const EditProfileModal = ({setModal}) => {
         website:""
     })
 
-    let validationSchema = Yup.object({
-        fullName: Yup.string().min(3, "Minimum 3 charecters required!"),
-        phone: Yup.string().min(10, "Minimum 3 charecters required!").min(10, "Enter valid phone number!").max(10, "Enter valid phone number!"),
-        email: Yup.string().email("Enter correct email address!"),
-        address: Yup.string().min(5, "Minimum 5 charecters required!"),
-        description:Yup.string().min(5, "Minimum 5 charecters required!").max(150, "Maximum 150 charecters only!"),
-        handle: Yup.string().min(5, "Minimum 5 charecters required!"),
-        website:Yup.string().url("Provide correct URL!"),
-    })
+    let validate = (values) => {
+        const errors = {};
+        if (values.fullName && values.fullName.length < 3) {
+            errors.fullName = "Minimum 3 characters required!";
+        }
+        if (values.phone && (values.phone.length < 10 || values.phone.length > 10)) {
+            errors.phone = "Enter valid phone number!";
+        }
+        if (values.email && !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.email)) {
+            errors.email = "Enter correct email address!";
+        }
+        if (values.address && values.address.length < 5) {
+            errors.address = "Minimum 5 characters required!";
+        }
+        if (values.description && (values.description.length < 5 || values.description.length > 150)) {
+            errors.description = values.description.length < 5 ? "Minimum 5 characters required!" : "Maximum 150 characters only!";
+        }
+        if (values.handle && values.handle.length < 5) {
+            errors.handle = "Minimum 5 characters required!";
+        }
+        if (values.website && !/^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/.test(values.website)) {
+            errors.website = "Provide correct URL!";
+        }
+        return errors;
+    }
 
     let submitForm = (values, { setSubmitting }) => {
         console.log(values, "submited");
@@ -92,7 +107,7 @@ const EditProfileModal = ({setModal}) => {
             <div className={css.bdy}>
                 <Formik
                     initialValues={initialValues}
-                    validationSchema={validationSchema}
+                    validate={validate}
                     onSubmit={submitForm}
                     className={css.formikForm}
                 >{(formik) => {

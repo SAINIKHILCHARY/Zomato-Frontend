@@ -8,18 +8,21 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "formik": "^2.2.9",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "react-router-dom": "6",
-    "react-slick": "^0.29.0",
-    "slick-carousel": "^1.8.1",
-    "yup": "^0.32.11"
+    "axios": "1.6.2",
+    "formik": "2.4.5",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "react-router-dom": "6.22.0",
+    "react-slick": "0.29.0",
+    "slick-carousel": "1.8.1"
   },
   "devDependencies": {
-    "@types/react": "^18.0.0",
-    "@types/react-dom": "^18.0.0",
-    "@vitejs/plugin-react": "^1.3.0",
-    "vite": "^6.2.0"
+    "@types/react": "18.2.0",
+    "@types/react-dom": "18.2.0",
+    "@vitejs/plugin-react": "4.2.1",
+    "vite": "5.0.12"
+  },
+  "browser": {
+    "axios": "axios/dist/axios.js"
   }
 }

@@ -1,5 +1,4 @@
 import {Formik, Form, ErrorMessage} from 'formik'
-import * as Yup from 'yup';
 
 import css from './AddAddressForm.module.css'
 
@@ -20,13 +19,27 @@ const AddAddressForm = ({setPage, setAddressModal, setSearchComp}) => {
         addressTypeOther:""
     }
 
-    let validationSchema = Yup.object({
-        completeAddress: Yup.string().min(5, "Minimum 5 charecters needed!").required("Required"),
-        floor: Yup.string().min(5, "Minimum 5 charecters needed!"),
-        nearBy: Yup.string().min(5, "Minimum 5 charecters needed!"),
-        addressType: Yup.string().required("Required"),
-        addressTypeOther: Yup.string().min(3, "Minimum 3 charecters required!")
-    })
+    let validate = (values) => {
+        const errors = {};
+        if (!values.completeAddress) {
+            errors.completeAddress = "Required";
+        } else if (values.completeAddress.length < 5) {
+            errors.completeAddress = "Minimum 5 characters needed!";
+        }
+        if (values.floor && values.floor.length < 5) {
+            errors.floor = "Minimum 5 characters needed!";
+        }
+        if (values.nearBy && values.nearBy.length < 5) {
+            errors.nearBy = "Minimum 5 characters needed!";
+        }
+        if (!values.addressType) {
+            errors.addressType = "Required";
+        }
+        if (values.addressTypeOther && values.addressTypeOther.length < 3) {
+            errors.addressTypeOther = "Minimum 3 characters required!";
+        }
+        return errors;
+    }
 
     let submitForm = (values) => {
         console.log(values, 'form values');
@@ -56,7 +69,7 @@ const AddAddressForm = ({setPage, setAddressModal, setSearchComp}) => {
         </div>
         <Formik
             initialValues={initialValues}
-            validationSchema={validationSchema}
+            validate={validate}
             onSubmit={submitForm}
             >
             {(formik) => {
