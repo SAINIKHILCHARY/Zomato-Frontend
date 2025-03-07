@@ -1,9 +1,8 @@
 services:
-  - type: web
+  - type: static
     name: zomato-clone
     env: node
     buildCommand: yarn install --frozen-lockfile && yarn build
-    startCommand: yarn preview
     staticPublishPath: ./dist
     envVars:
       - key: NODE_VERSION
