@@ -2,6 +2,9 @@
   "name": "zomato_clone",
   "private": true,
   "version": "0.0.0",
+  "engines": {
+    "node": ">=16.0.0"
+  },
   "scripts": {
     "dev": "vite",
     "build": "vite build",
