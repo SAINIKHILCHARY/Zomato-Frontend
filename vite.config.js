@@ -6,13 +6,9 @@ export default defineConfig({
   plugins: [react()],
   build: {
     outDir: 'dist',
-    rollupOptions: {
-      external: ['axios'],
-      output: {
-        globals: {
-          axios: 'axios'
-        }
-      }
+    commonjsOptions: {
+      include: [/axios/, /react/, /react-dom/, /react-router-dom/],
+      transformMixedEsModules: true
     }
   },
   publicDir: 'public',
@@ -20,9 +16,7 @@ export default defineConfig({
     include: ['axios', 'react', 'react-dom', 'react-router-dom']
   },
   resolve: {
-    alias: {
-      'axios': 'axios/dist/axios.js'
-    }
+    dedupe: ['axios']
   }
 });
 

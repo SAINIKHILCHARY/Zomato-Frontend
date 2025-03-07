@@ -22,7 +22,5 @@
     "@vitejs/plugin-react": "4.2.1",
     "vite": "5.0.12"
   },
-  "browser": {
-    "axios": "axios/dist/axios.js"
-  }
+  "type": "module"
 }
