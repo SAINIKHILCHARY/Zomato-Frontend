@@ -9,10 +9,12 @@ const api = axios.create({
   baseURL: API_URL,
   headers: {
     'Content-Type': 'application/json',
-    'Accept': 'application/json'
+    'Accept': 'application/json',
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+    'Access-Control-Allow-Headers': 'Origin, Content-Type, Accept, Authorization, X-Request-With'
   },
-  withCredentials: false,
-  timeout: 15000
+  withCredentials: true
 });
 
 // Add request interceptor
@@ -21,6 +23,12 @@ api.interceptors.request.use(
     // Clean up URL and ensure /api prefix
     const url = config.url.replace(/\/+/g, '/');
     config.url = url.startsWith('/api') ? url : `/api${url}`;
+    
+    // Add CORS headers to every request
+    config.headers = {
+      ...config.headers,
+      'Origin': window.location.origin
+    };
     
     // Log the request for debugging
     console.log('Making request to:', `${config.baseURL}${config.url}`);
@@ -57,12 +65,21 @@ api.interceptors.response.use(
   },
   (error) => {
     if (error.response) {
-      console.error('Server error:', {
-        url: error.config?.url,
-        status: error.response.status,
-        statusText: error.response.statusText,
-        data: error.response.data
-      });
+      // Handle CORS errors specifically
+      if (error.response.status === 0 || error.message.includes('CORS')) {
+        console.error('CORS error detected:', {
+          url: error.config?.url,
+          origin: window.location.origin,
+          message: error.message
+        });
+      } else {
+        console.error('Server error:', {
+          url: error.config?.url,
+          status: error.response.status,
+          statusText: error.response.statusText,
+          data: error.response.data
+        });
+      }
     } else if (error.request) {
       console.error('Network error:', {
         url: error.config?.url,
