@@ -30,7 +30,7 @@ const Signup = () => {
       });
 
       // Make the API call to the signup endpoint
-      const response = await api.post('/api/users/signup', {
+      const response = await api.post('/api/auth/register', {
         username: formData.username,
         email: formData.email,
         password: formData.password
@@ -51,18 +51,23 @@ const Signup = () => {
     } catch (err) {
       console.error('Signup error:', err);
       
-      // Log the full error details
+      // Log the full error details for debugging
       console.error('Detailed error:', {
         message: err.message,
         response: err.response?.data,
         status: err.response?.status,
-        headers: err.response?.headers
+        headers: err.response?.headers,
+        config: err.config
       });
 
       if (err.response?.data?.message) {
         setError(err.response.data.message);
       } else if (err.message.includes('Network Error')) {
         setError('Unable to connect to the server. Please try again later.');
+      } else if (err.response?.status === 409) {
+        setError('User already exists with this email.');
+      } else if (err.response?.status === 400) {
+        setError('Invalid input. Please check your details.');
       } else {
         setError('Server error. Please try again later.');
       }

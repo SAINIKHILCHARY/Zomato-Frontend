@@ -11,7 +11,7 @@ const api = axios.create({
     'Accept': 'application/json'
   },
   withCredentials: false,
-  timeout: 15000 // 15 second timeout
+  timeout: 30000 // 30 second timeout
 });
 
 // Add request interceptor
@@ -27,9 +27,14 @@ api.interceptors.request.use(
       headers: config.headers,
       data: config.data ? {
         ...config.data,
-        password: config.data.password ? '[HIDDEN]' : undefined
+        password: '[HIDDEN]'
       } : undefined
     });
+
+    // Add CORS headers
+    config.headers['Access-Control-Allow-Origin'] = '*';
+    config.headers['Access-Control-Allow-Methods'] = 'GET,POST,PUT,DELETE,OPTIONS';
+    config.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization';
     
     return config;
   },
