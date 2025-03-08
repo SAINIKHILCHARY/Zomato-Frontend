@@ -7,7 +7,7 @@ import closeBtn from '/images/closeBtn.jpg';
 import signupCss from './Signup.module.css';
 
 // Configure axios defaults
-axios.defaults.baseURL = 'http://localhost:4001';
+axios.defaults.baseURL = '/api';  // Updated to use Vite proxy
 axios.defaults.headers.post['Content-Type'] = 'application/json';
 axios.defaults.withCredentials = true;
 
@@ -60,11 +60,11 @@ const Signup = ({ setAuth }) => {
             }
 
             // Make API call to backend
+            console.log('Attempting to connect to:', axios.defaults.baseURL);
             const response = await axios.post('/signup', {
                 username: formData.username.trim(),
                 email: formData.email.trim(),
-                password: formData.password,
-                checkbox: formData.checkbox
+                password: formData.password
             });
 
             console.log('Signup response:', response.data);
@@ -87,10 +87,36 @@ const Signup = ({ setAuth }) => {
             }
         } catch (err) {
             console.error('Signup error:', err);
+            
+            // Network or connection errors
             if (err.code === 'ERR_NETWORK') {
-                setError('Unable to connect to server. Please check if the backend server is running.');
-            } else {
-                setError(err.response?.data?.message || 'An error occurred during registration. Please try again.');
+                setError('Unable to connect to server. Please check if the backend server is running at http://localhost:4001');
+            } 
+            // CORS errors
+            else if (err.code === 'ERR_FORBIDDEN' || err.response?.status === 403) {
+                setError('Access forbidden. Please check CORS settings on the backend server.');
+            }
+            // Existing user
+            else if (err.response?.status === 409) {
+                setError('Email already exists. Please use a different email or try logging in.');
+            }
+            // Validation errors
+            else if (err.response?.status === 400) {
+                setError(err.response.data.message || 'Invalid input. Please check your details.');
+            }
+            // Server errors
+            else if (err.response?.status >= 500) {
+                setError('Server error. Please try again later.');
+            }
+            // Unknown errors
+            else {
+                setError('An unexpected error occurred. Please try again later.');
+                console.error('Detailed error:', {
+                    code: err.code,
+                    message: err.message,
+                    response: err.response,
+                    status: err.response?.status
+                });
             }
         } finally {
             setLoading(false);

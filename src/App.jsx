@@ -27,7 +27,7 @@ function App() {
   const [error, setError] = useState('');
 
   useEffect(() => {
-    fetch("http://localhost:3000/")
+    fetch("http://localhost:5000/")
       .then((response) => response.text())
       .then((data) => setMessage(data))
       .catch((error) => {
