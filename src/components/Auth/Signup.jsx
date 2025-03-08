@@ -22,40 +22,9 @@ const Signup = () => {
     setLoading(true);
     setError('');
 
-    // Basic validation
-    if (!formData.username || !formData.email || !formData.password) {
-      setError('All fields are required');
-      setLoading(false);
-      return;
-    }
-
-    // Email validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(formData.email)) {
-      setError('Please enter a valid email address');
-      setLoading(false);
-      return;
-    }
-
-    // Password validation
-    if (formData.password.length < 6) {
-      setError('Password must be at least 6 characters long');
-      setLoading(false);
-      return;
-    }
-
     try {
-      // Log the full URL being used
-      const signupUrl = '/auth/signup';
-      console.log('Full signup URL:', api.defaults.baseURL + signupUrl);
-      console.log('Signup data:', { ...formData, password: '[HIDDEN]' });
-
-      const response = await api.post(signupUrl, formData, {
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        }
-      });
+      // Direct API call without /auth prefix
+      const response = await api.post('/signup', formData);
       
       console.log('Signup response:', response.data);
       
@@ -70,11 +39,7 @@ const Signup = () => {
         setTimeout(() => navigate('/login'), 2000);
       }
     } catch (err) {
-      console.error('Signup error details:', {
-        message: err.message,
-        response: err.response?.data,
-        status: err.response?.status
-      });
+      console.error('Signup error:', err);
       
       if (err.response?.data?.message) {
         setError(err.response.data.message);
@@ -82,6 +47,15 @@ const Signup = () => {
         setError('Unable to connect to the server. Please try again later.');
       } else {
         setError('An unexpected error occurred. Please try again later.');
+      }
+
+      // Log additional error details
+      if (err.response) {
+        console.error('Error response:', {
+          status: err.response.status,
+          headers: err.response.headers,
+          data: err.response.data
+        });
       }
     } finally {
       setLoading(false);
