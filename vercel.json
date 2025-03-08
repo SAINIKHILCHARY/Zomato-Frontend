@@ -1,44 +1,20 @@
-/*{
-  "version": 2,
-  "builds": [
-    {
-      "src": "package.json",
-      "use": "@vercel/static-build",
-      "config": {
-        "distDir": "dist",
-        "buildCommand": "yarn build"
-      }
-    }
-  ],
+{
+  "buildCommand": "npm run build",
+  "devCommand": "npm run dev",
+  "installCommand": "npm install",
+  "framework": "vite",
+  "outputDirectory": "dist",
   "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "http://localhost:4001/$1"
+    },
     {
       "src": "/(.*)",
       "dest": "/index.html"
     }
   ],
-  "outputDirectory": "dist"
+  "env": {
+    "VITE_BACKEND_URL": "http://localhost:4001"
+  }
 } 
-*/
-{
-  "version": 2,
-  "builds": [
-    {
-      "src": "package.json",
-      "use": "@vercel/static-build",
-      "config": {
-        "distDir": "dist",
-        "buildCommand": "yarn install --frozen-lockfile && yarn build"
-      }
-    }
-  ],
-  "routes": [
-    { "handle": "filesystem" },
-    {
-      "src": "/assets/(.*)",
-      "headers": { "cache-control": "public, max-age=31536000, immutable" },
-      "continue": true
-    },
-    { "src": "/(.*)", "dest": "/index.html" }
-  ],
-  "outputDirectory": "dist"
-}
