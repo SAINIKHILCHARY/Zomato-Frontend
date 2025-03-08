@@ -45,22 +45,36 @@ const Signup = () => {
     }
 
     try {
-      console.log('Sending signup request to:', `${api.defaults.baseURL}/auth/signup`);
-      console.log('Signup data:', formData);
+      // Log the full URL being used
+      const signupUrl = '/auth/signup';
+      console.log('Full signup URL:', api.defaults.baseURL + signupUrl);
+      console.log('Signup data:', { ...formData, password: '[HIDDEN]' });
 
-      const response = await api.post('/auth/signup', formData);
+      const response = await api.post(signupUrl, formData, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        }
+      });
       
       console.log('Signup response:', response.data);
       
-      if (response.data.token) {
-        localStorage.setItem('token', response.data.token);
-        navigate('/login');
+      if (response.data.success || response.data.token) {
+        if (response.data.token) {
+          localStorage.setItem('token', response.data.token);
+        }
+        setError('Registration successful! Redirecting to login...');
+        setTimeout(() => navigate('/login'), 2000);
       } else {
-        setError('Registration successful. Please login.');
+        setError('Registration completed. Please login to continue.');
         setTimeout(() => navigate('/login'), 2000);
       }
     } catch (err) {
-      console.error('Signup error details:', err);
+      console.error('Signup error details:', {
+        message: err.message,
+        response: err.response?.data,
+        status: err.response?.status
+      });
       
       if (err.response?.data?.message) {
         setError(err.response.data.message);
@@ -78,11 +92,17 @@ const Signup = () => {
     <div className="signup-container">
       <h2>Signup</h2>
       {error && (
-        <div className="error-message" style={{ color: 'red', marginBottom: '10px' }}>
+        <div className="error-message" style={{ 
+          color: error.includes('successful') ? 'green' : 'red',
+          marginBottom: '10px',
+          padding: '10px',
+          borderRadius: '4px',
+          backgroundColor: error.includes('successful') ? '#e8f5e9' : '#ffebee'
+        }}>
           {error}
         </div>
       )}
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
         <div className="form-group">
           <input
             type="text"
@@ -92,6 +112,7 @@ const Signup = () => {
             onChange={handleChange}
             required
             className="form-control"
+            style={{ padding: '10px', width: '100%', borderRadius: '4px', border: '1px solid #ddd' }}
           />
         </div>
         <div className="form-group">
@@ -103,6 +124,7 @@ const Signup = () => {
             onChange={handleChange}
             required
             className="form-control"
+            style={{ padding: '10px', width: '100%', borderRadius: '4px', border: '1px solid #ddd' }}
           />
         </div>
         <div className="form-group">
@@ -114,13 +136,23 @@ const Signup = () => {
             onChange={handleChange}
             required
             className="form-control"
+            style={{ padding: '10px', width: '100%', borderRadius: '4px', border: '1px solid #ddd' }}
           />
         </div>
         <button 
           type="submit" 
           disabled={loading}
           className="submit-button"
-          style={{ opacity: loading ? 0.7 : 1 }}
+          style={{ 
+            padding: '12px',
+            backgroundColor: loading ? '#ccc' : '#ff4081',
+            color: 'white',
+            border: 'none',
+            borderRadius: '4px',
+            cursor: loading ? 'not-allowed' : 'pointer',
+            opacity: loading ? 0.7 : 1,
+            transition: 'all 0.3s ease'
+          }}
         >
           {loading ? 'Signing up...' : 'Create Account'}
         </button>
