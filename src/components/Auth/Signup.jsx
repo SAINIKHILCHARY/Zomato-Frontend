@@ -23,25 +23,17 @@ const Signup = () => {
     setError('');
 
     try {
-      // Log the request details
-      console.log('Attempting signup with:', {
-        ...formData,
-        password: '[HIDDEN]'
-      });
-
       // Make the API call to the signup endpoint
-      const response = await api.post('/api/auth/register', {
+      const response = await api.post('/signup', {
         username: formData.username,
         email: formData.email,
         password: formData.password
       });
       
-      console.log('Signup response:', response.data);
+      console.log('Signup successful:', response.data);
       
-      if (response.data.success || response.data.token) {
-        if (response.data.token) {
-          localStorage.setItem('token', response.data.token);
-        }
+      if (response.data.token) {
+        localStorage.setItem('token', response.data.token);
         setError('Registration successful! Redirecting to login...');
         setTimeout(() => navigate('/login'), 2000);
       } else {
@@ -49,27 +41,18 @@ const Signup = () => {
         setTimeout(() => navigate('/login'), 2000);
       }
     } catch (err) {
-      console.error('Signup error:', err);
+      console.error('Signup failed:', err.message);
       
-      // Log the full error details for debugging
-      console.error('Detailed error:', {
-        message: err.message,
-        response: err.response?.data,
-        status: err.response?.status,
-        headers: err.response?.headers,
-        config: err.config
-      });
-
-      if (err.response?.data?.message) {
-        setError(err.response.data.message);
-      } else if (err.message.includes('Network Error')) {
-        setError('Unable to connect to the server. Please try again later.');
+      if (err.response?.status === 500) {
+        setError('Server error. Please try again later.');
       } else if (err.response?.status === 409) {
         setError('User already exists with this email.');
       } else if (err.response?.status === 400) {
-        setError('Invalid input. Please check your details.');
+        setError('Please check your input and try again.');
+      } else if (err.message.includes('Network Error')) {
+        setError('Unable to connect to the server. Please try again later.');
       } else {
-        setError('Server error. Please try again later.');
+        setError('An unexpected error occurred. Please try again.');
       }
     } finally {
       setLoading(false);
