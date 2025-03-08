@@ -24,7 +24,7 @@ const Signup = () => {
 
     try {
       // Make the API call to the signup endpoint
-      const response = await api.post('/signup', {
+      const response = await api.post('/api/auth/signup', {
         username: formData.username,
         email: formData.email,
         password: formData.password
@@ -36,24 +36,33 @@ const Signup = () => {
         localStorage.setItem('token', response.data.token);
         setError('Registration successful! Redirecting to login...');
         setTimeout(() => navigate('/login'), 2000);
-      } else {
+      } else if (response.data.success) {
         setError('Registration completed. Please login to continue.');
         setTimeout(() => navigate('/login'), 2000);
+      } else {
+        throw new Error('Invalid response from server');
       }
     } catch (err) {
-      console.error('Signup failed:', err.message);
+      console.error('Signup failed:', err);
       
       if (err.response?.status === 500) {
         setError('Server error. Please try again later.');
       } else if (err.response?.status === 409) {
         setError('User already exists with this email.');
       } else if (err.response?.status === 400) {
-        setError('Please check your input and try again.');
+        setError(err.response.data.message || 'Please check your input and try again.');
       } else if (err.message.includes('Network Error')) {
         setError('Unable to connect to the server. Please try again later.');
       } else {
         setError('An unexpected error occurred. Please try again.');
       }
+
+      // Log detailed error for debugging
+      console.error('Detailed error:', {
+        status: err.response?.status,
+        data: err.response?.data,
+        message: err.message
+      });
     } finally {
       setLoading(false);
     }
