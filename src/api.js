@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:4001/api';
+const API_URL = 'https://zomato-backend--gilt.vercel.app';
 
 console.log('API URL:', API_URL); // Debug log
 
@@ -11,7 +11,7 @@ const api = axios.create({
     'Accept': 'application/json'
   },
   withCredentials: false,
-  timeout: 10000 // 10 second timeout
+  timeout: 15000 // 15 second timeout
 });
 
 // Add request interceptor
@@ -31,10 +31,6 @@ api.interceptors.request.use(
       } : undefined
     });
     
-    const token = localStorage.getItem('token');
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
     return config;
   },
   (error) => {

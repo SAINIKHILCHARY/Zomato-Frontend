@@ -22,28 +22,6 @@ const Signup = () => {
     setLoading(true);
     setError('');
 
-    // Basic validation
-    if (!formData.username || !formData.email || !formData.password) {
-      setError('All fields are required');
-      setLoading(false);
-      return;
-    }
-
-    // Email validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(formData.email)) {
-      setError('Please enter a valid email address');
-      setLoading(false);
-      return;
-    }
-
-    // Password validation
-    if (formData.password.length < 6) {
-      setError('Password must be at least 6 characters long');
-      setLoading(false);
-      return;
-    }
-
     try {
       // Log the request details
       console.log('Attempting signup with:', {
@@ -51,7 +29,12 @@ const Signup = () => {
         password: '[HIDDEN]'
       });
 
-      const response = await api.post('/auth/signup', formData);
+      // Make the API call to the signup endpoint
+      const response = await api.post('/api/users/signup', {
+        username: formData.username,
+        email: formData.email,
+        password: formData.password
+      });
       
       console.log('Signup response:', response.data);
       
@@ -81,7 +64,7 @@ const Signup = () => {
       } else if (err.message.includes('Network Error')) {
         setError('Unable to connect to the server. Please try again later.');
       } else {
-        setError('An unexpected error occurred. Please try again later.');
+        setError('Server error. Please try again later.');
       }
     } finally {
       setLoading(false);
