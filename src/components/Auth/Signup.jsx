@@ -22,9 +22,36 @@ const Signup = () => {
     setLoading(true);
     setError('');
 
+    // Basic validation
+    if (!formData.username || !formData.email || !formData.password) {
+      setError('All fields are required');
+      setLoading(false);
+      return;
+    }
+
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      setError('Please enter a valid email address');
+      setLoading(false);
+      return;
+    }
+
+    // Password validation
+    if (formData.password.length < 6) {
+      setError('Password must be at least 6 characters long');
+      setLoading(false);
+      return;
+    }
+
     try {
-      // Direct API call without /auth prefix
-      const response = await api.post('/signup', formData);
+      // Log the request details
+      console.log('Attempting signup with:', {
+        ...formData,
+        password: '[HIDDEN]'
+      });
+
+      const response = await api.post('/auth/signup', formData);
       
       console.log('Signup response:', response.data);
       
@@ -41,21 +68,20 @@ const Signup = () => {
     } catch (err) {
       console.error('Signup error:', err);
       
+      // Log the full error details
+      console.error('Detailed error:', {
+        message: err.message,
+        response: err.response?.data,
+        status: err.response?.status,
+        headers: err.response?.headers
+      });
+
       if (err.response?.data?.message) {
         setError(err.response.data.message);
       } else if (err.message.includes('Network Error')) {
         setError('Unable to connect to the server. Please try again later.');
       } else {
         setError('An unexpected error occurred. Please try again later.');
-      }
-
-      // Log additional error details
-      if (err.response) {
-        console.error('Error response:', {
-          status: err.response.status,
-          headers: err.response.headers,
-          data: err.response.data
-        });
       }
     } finally {
       setLoading(false);
@@ -109,6 +135,7 @@ const Signup = () => {
             value={formData.password}
             onChange={handleChange}
             required
+            minLength="6"
             className="form-control"
             style={{ padding: '10px', width: '100%', borderRadius: '4px', border: '1px solid #ddd' }}
           />

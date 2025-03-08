@@ -7,12 +7,12 @@
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "https://zomato-clone-backend-nine.vercel.app/api/:path*"
+      "destination": "https://zomato-backend--gilt.vercel.app/api/:path*"
     }
   ],
   "env": {
     "NODE_ENV": "production",
-    "VITE_API_URL": "https://zomato-clone-backend-nine.vercel.app/api"
+    "VITE_API_URL": "https://zomato-backend--gilt.vercel.app/api"
   },
   "headers": [
     {
