@@ -3,6 +3,7 @@ import axios from 'axios';
 // Use the environment variable or fallback to the deployed URL
 const API_URL = 'https://zomato-backend--gilt.vercel.app';
 
+
 console.log('API URL:', API_URL); // Debug log
 
 const api = axios.create({
