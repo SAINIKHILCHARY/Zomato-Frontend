@@ -27,7 +27,7 @@ function App() {
   const [error, setError] = useState('');
 
   useEffect(() => {
-    fetch("http://localhost:5000/")
+    fetch("https://zomato-backend-ygx.vercel.app/")
       .then((response) => response.text())
       .then((data) => setMessage(data))
       .catch((error) => {

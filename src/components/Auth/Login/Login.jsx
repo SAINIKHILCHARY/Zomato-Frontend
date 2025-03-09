@@ -10,7 +10,7 @@ import closeBtn from '/images/closeBtn.jpg';
 import loginCss from './Login.module.css';
 
 // Configure axios defaults
-axios.defaults.baseURL = 'http://localhost:4001';
+axios.defaults.baseURL = 'https://zomato-backend-ygx.vercel.app/';
 axios.defaults.headers.post['Content-Type'] = 'application/json';
 axios.defaults.withCredentials = true;
 
